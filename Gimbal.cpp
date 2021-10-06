@@ -18,7 +18,6 @@ void Gimbal::cmdPose(State cmd_pose){
 	servo_pitch.write(cmd_pose.pitch);
 	servo_yaw.write(cmd_pose.yaw);
 	pose = cmd_pose;
-
 }
 void Gimbal::begin(){
 	servo_pitch.attach(pin_pitch);
@@ -31,7 +30,7 @@ void Gimbal::cmdPullTriger(){
 	servo_triger.write(10);
 }
 
-void set_cmd_vel(State cmd_vel)
+void Gimbal::set_cmd_vel(State cmd_vel)
 {
 	this->cmd_vel = cmd_vel;
 }

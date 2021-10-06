@@ -7,11 +7,6 @@ struct State{
   double yaw;
 };
 
-class VelCommander{
-
-}
-
-
 class Gimbal
 {
   private:
@@ -20,17 +15,18 @@ class Gimbal
   Servo servo_yaw;
   Servo servo_triger;
   State pose;
-  State rate;
+  State vel;
+  State cmd_vel;
   
   public:
   Gimbal(int pin_pitch, int pin_yaw, int pin_trigger);
   void cmdPose(State cmd_pose);
-  void cmdVel(State cmd_vel);
+  void set_cmd_vel(State cmd_vel);
   void cmdLinearTraj(State cmd_pose, State cmd_vel);
   void cmdPullTriger(); 
   void goHome();
   void begin();
+  void motors_step(double dt);
   enum Mode {E_POSE, E_VEL, E_LINE_TRAJ};
-  
 };
 
