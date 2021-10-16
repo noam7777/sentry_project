@@ -1,11 +1,23 @@
 #include "Arduino.h"
 #include <Servo.h>
 
+const unsigned int MAX_MESSAGE_LENGTH = 15;
+const unsigned int ANGLE_CMD_SIZE = 3;
+typedef enum {CMD_TYPE_POSE, CMD_TYPE_VEL, CMD_TYPE_INVALID} CMD_TYPE;
 
 struct State{
   double pitch;
   double yaw;
 };
+
+struct GimbalCommand{
+  CMD_TYPE cmd_type; // 1 for pose and 2 for vel
+  State state; // intigers in degrees
+  bool arm;  // send serial 2 for true
+  bool trigger; // send serial 2 for true
+};
+
+
 
 class Gimbal
 {
@@ -27,6 +39,7 @@ class Gimbal
   void goHome();
   void begin();
   void motors_step(double dt);
-  enum Mode {E_POSE, E_VEL, E_LINE_TRAJ};
+  GimbalCommand get_cmd_from_serial();
+  void printCmd(GimbalCommand cmd);
 };
 
