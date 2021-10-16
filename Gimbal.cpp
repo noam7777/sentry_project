@@ -64,62 +64,81 @@ GimbalCommand Gimbal::get_cmd_from_serial(){
    //Full message received...
    else
    {
-      //Add null character to string
-      message[message_pos] = '\0';
-      Serial.println(message);
+	//Add null character to string
+	message[message_pos] = '\0';
+	Serial.println(message);
 
-        // parse the serial message:
-      char cmd_type_c;
-      char pitch_c[4];
-      char yaw_c[4];
-      char arm_c;
-      char trigger_c;
-      cmd_type_c = message[0];
-      for(int i=0;i<3;i++){
-        pitch_c[i] = message[i+2];
-        yaw_c[i] = message[i+6];
-      }
-      pitch_c[ANGLE_CMD_SIZE] = '\0';
-      yaw_c[ANGLE_CMD_SIZE] = '\0';
+	// parse the serial message:
+	char cmd_type_c;
+	char pitch_c[4];
+	char yaw_c[4];
+	char arm_c;
+	char trigger_c;
+	cmd_type_c = message[0];
+	for(int i=0;i<3;i++){
+		pitch_c[i] = message[i+2];
+		yaw_c[i] = message[i+6];
+	}
+	pitch_c[ANGLE_CMD_SIZE] = '\0';
+	yaw_c[ANGLE_CMD_SIZE] = '\0';
 
-      arm_c = message[10];
-      trigger_c = message[12];
+	arm_c = message[10];
+	trigger_c = message[12];
 
-        //convert to int
-      if(cmd_type_c == 1)
-        cmd.cmd_type = CMD_TYPE_POSE;
-      else if(cmd_type_c == 2)
-        cmd.cmd_type = CMD_TYPE_VEL;
-      else 
-        cmd.cmd_type = CMD_TYPE_INVALID;
+	//convert to int
+	if(cmd_type_c == char('1'))
+		cmd.cmd_type = CMD_TYPE_POSE;
+	else if(cmd_type_c == char('2'))
+		cmd.cmd_type = CMD_TYPE_VEL;
+	else 
+		cmd.cmd_type = CMD_TYPE_INVALID;
 
-      State state;
-      state.pitch = atoi(pitch_c);
-      state.yaw = atoi(yaw_c);
-      cmd.state.pitch = atoi(pitch_c);
-      cmd.state.yaw = atoi(yaw_c);
+	State state;
+	state.pitch = atoi(pitch_c);
+	state.yaw = atoi(yaw_c);
+	cmd.state.pitch = atoi(pitch_c);
+	cmd.state.yaw = atoi(yaw_c);
 
-      cmd.arm = arm_c == '2' ? true : false;
-      cmd.trigger = arm_c == '2' ? true : false;
-      
-      message_pos = 0;
+	cmd.arm = (arm_c == char('2'));
+	cmd.trigger = (arm_c == char('2'));
 
+
+	message_pos = 0; //	for reinitializing the serial reader.
    }
  }
  return cmd;
 
 }
 
-void Gimbal::printCmd(cmd){
-  Serial.print("CMD_TYPE: ");
-  Serial.print(cmd.cmd_type);
-  Serial.print("| pitch_c: ");
-  Serial.print(cmd.state.pitch);
-  Serial.print("| yaw_c: ");
-  Serial.print(cmd.state.yaw);
-  Serial.print("| arm_c: ");
-  Serial.print(cmd.arm);
-  Serial.print("| trigger_c: ");
-  Serial.print(cmd.trigger);
-  Serial.println("");
+void Gimbal::printCmd(GimbalCommand cmd){
+	Serial.print("CMD_TYPE: ");
+	if(cmd.cmd_type == 0)
+		Serial.print("invalid_type");
+	if(cmd.cmd_type == 1)
+		Serial.print("pose_type");
+	if(cmd.cmd_type == 2)
+		Serial.print("vel_type");
+	Serial.print("| pitch_c: ");
+	Serial.print(cmd.state.pitch);
+	Serial.print("| yaw_c: ");
+	Serial.print(cmd.state.yaw);
+	Serial.print("| arm_c: ");
+  	Serial.print(cmd.arm ? "true" : "false");
+	Serial.print("| trigger_c: ");
+  	Serial.print(cmd.trigger ? "true" : "false");
+
+	Serial.println("");
+
+
+
+  	Serial.println("debug the CMD_TYPE:");
+	Serial.print("CMD_TYPE_POSE = ");
+	Serial.println(CMD_TYPE_POSE);
+	Serial.print("CMD_TYPE_VEL = ");
+	Serial.println(CMD_TYPE_VEL);
+	Serial.print("CMD_TYPE_INVALID = ");
+	Serial.println(CMD_TYPE_INVALID);
+
+
+
 }

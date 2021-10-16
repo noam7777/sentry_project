@@ -3,7 +3,7 @@
 
 const unsigned int MAX_MESSAGE_LENGTH = 15;
 const unsigned int ANGLE_CMD_SIZE = 3;
-typedef enum {CMD_TYPE_POSE, CMD_TYPE_VEL, CMD_TYPE_INVALID} CMD_TYPE;
+typedef enum {CMD_TYPE_INVALID, CMD_TYPE_POSE, CMD_TYPE_VEL} CMD_TYPE;
 
 struct State{
   double pitch;
@@ -33,7 +33,7 @@ class Gimbal
   public:
   Gimbal(int pin_pitch, int pin_yaw, int pin_trigger);
   void cmdPose(State cmd_pose);
-  void set_cmd_vel(State cmd_vel);
+  void set_cmd_vel(State cmd_vel);//not functional
   void cmdLinearTraj(State cmd_pose, State cmd_vel);
   void cmdPullTriger(); 
   void goHome();
